@@ -25,4 +25,12 @@ export async function POST(request: Request) {
   return NextResponse.redirect(new URL('/admin', request.url), { status: 303 });
 }
 
+export async function GET(request: Request) {
+  if (!isAuthed(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id') || '';
+  if (id) await removeManualPost(id);
+  return NextResponse.redirect(new URL('/admin', request.url), { status: 303 });
+}
+
 
