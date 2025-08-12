@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const items = await getAggregatedFeed(50);
+    const items = await getAggregatedFeed(25);
     return NextResponse.json({ items }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     return NextResponse.json({ error: 'Failed to fetch feeds' }, { status: 500 });

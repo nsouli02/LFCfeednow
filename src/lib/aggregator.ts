@@ -2,7 +2,7 @@ import type { FeedItem } from './types';
 import { fetchLiverpoolRss } from './webNews';
 import { listManualPosts } from './adminStore';
 
-export async function getAggregatedFeed(limit = 24): Promise<FeedItem[]> {
+export async function getAggregatedFeed(limit = 25): Promise<FeedItem[]> {
   let items: FeedItem[] = [];
   const results = await Promise.allSettled([
     listManualPosts(),
