@@ -53,7 +53,7 @@ export default function AdminPage({ searchParams }: { searchParams?: Record<stri
 async function ManualPostsList() {
   let items: any[] = [];
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/admin/posts`, { cache: 'no-store' });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/admin/posts`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Posts fetch failed: ${res.status}`);
     const data = await res.json();
     items = data.items || [];

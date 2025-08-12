@@ -5,8 +5,8 @@ import { listManualPosts } from './adminStore';
 export async function getAggregatedFeed(limit = 24): Promise<FeedItem[]> {
   let items: FeedItem[] = [];
   const results = await Promise.allSettled([
-    fetchLiverpoolRss(limit),
     listManualPosts(),
+    fetchLiverpoolRss(limit),
   ]);
   for (const r of results) if (r.status === 'fulfilled') items = items.concat(r.value);
 

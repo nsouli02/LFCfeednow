@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { removeManualPost } from '@/lib/adminStore';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 function isAuthed(request: Request): boolean {
   const cookie = request.headers.get('cookie') || '';
