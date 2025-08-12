@@ -8,9 +8,9 @@ export const metadata = {
   title: 'LFC news only',
   description: 'Liverpool FC transfer headlines and latest updates',
   icons: {
-    icon: '/lfc.jpg',
-    shortcut: '/lfc.jpg',
-    apple: '/lfc.jpg',
+    icon: '/images.jfif',
+    shortcut: '/images.jfif',
+    apple: '/images.jfif',
   },
 };
 
