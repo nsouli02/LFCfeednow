@@ -28,12 +28,13 @@ export async function POST(request: Request) {
     timestamp: new Date().toISOString(),
     sourceLabel: 'Manual',
   };
-  addManualPost(item);
+  await addManualPost(item);
   return NextResponse.redirect(new URL('/admin', request.url));
 }
 
 export async function GET() {
-  return NextResponse.json({ items: listManualPosts() });
+  const items = await listManualPosts();
+  return NextResponse.json({ items });
 }
 
 

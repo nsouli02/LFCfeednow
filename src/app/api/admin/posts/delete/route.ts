@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const { searchParams } = new URL(request.url);
     id = searchParams.get('id') || '';
   }
-  if (id) removeManualPost(id);
+  if (id) await removeManualPost(id);
   return NextResponse.redirect(new URL('/admin', request.url), { status: 303 });
 }
 
