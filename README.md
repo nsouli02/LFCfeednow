@@ -28,6 +28,12 @@ values ('$2a$10$exampleexampleexampleexampleexampleexampleexamplee')
 on conflict do nothing;
 ```
 
+If you prefer to keep your existing table `Adminpost` (with columns `id bigint`, `created_at timestamptz`, `title text`, `content text`), set this env var so the app uses it instead of `manual_posts`:
+
+```
+NEXT_PUBLIC_SUPABASE_POSTS_TABLE=Adminpost
+```
+
 ## TransferWire
 
 Next.js app that aggregates transfer updates from social sources, removes reporter names, and generates stylish headlines.
