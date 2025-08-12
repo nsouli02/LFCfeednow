@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+import { AdminPostsListClient } from '@/components/AdminPostsListClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,6 +39,7 @@ export default function AdminPage({ searchParams }: { searchParams?: Record<stri
             <button className="rounded-md bg-emerald-600 px-4 py-2 font-medium">Publish</button>
           </form>
           <ManualPostsList />
+          <AdminPostsListClient />
           <div className="mt-4 flex items-center justify-between text-sm text-white/70">
             <form action="/api/admin/logout" method="post">
               <button className="rounded-md bg-red-600/80 px-3 py-1.5 font-medium text-white">Logout</button>
