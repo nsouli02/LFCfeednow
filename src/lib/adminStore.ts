@@ -1,27 +1,27 @@
 import type { FeedItem } from './types';
-import { getSupabase, supabaseConfigured } from './supabaseClient';
+import { getSupabase } from './supabaseClient';
 
-const TABLE = 'manual_posts';
+// Match your current Supabase table structure
+const TABLE = 'Adminpost';
 
 export async function addManualPost(item: FeedItem): Promise<void> {
   const supabase = getSupabase();
   if (!supabase) throw new Error('Supabase not configured');
-  await supabase.from(TABLE).insert({
-    id: item.id,
+  // Columns available: id (int8, identity), created_at (timestamptz), title (text), content (text)
+  const content = [item.description, item.fullText].filter(Boolean).join('\n\n');
+  const { error } = await supabase.from(TABLE).insert({
     title: item.title,
-    description: item.description,
-    full_text: item.fullText,
-    media_url: item.mediaUrl,
-    permalink_url: item.permalinkUrl,
-    timestamp: item.timestamp,
-    source_label: item.sourceLabel,
+    content,
+    created_at: item.timestamp,
   });
+  if (error) throw new Error(`manual_posts insert failed: ${error.message}`);
 }
 
 export async function removeManualPost(id: string): Promise<boolean> {
   const supabase = getSupabase();
   if (!supabase) return false;
-  const { error } = await supabase.from(TABLE).delete().eq('id', id);
+  const numericId = Number(id);
+  const { error } = await supabase.from(TABLE).delete().eq('id', isNaN(numericId) ? id : numericId);
   return !error;
 }
 
@@ -30,19 +30,19 @@ export async function listManualPosts(): Promise<FeedItem[]> {
   if (!supabase) return [];
   const { data } = await supabase
     .from(TABLE)
-    .select('*')
-    .order('timestamp', { ascending: false });
+    .select('id, created_at, title, content')
+    .order('created_at', { ascending: false });
   return (
     data?.map((r: any) => ({
-      id: r.id,
+      id: String(r.id),
       platform: 'manual',
       title: r.title,
-      description: r.description,
-      fullText: r.full_text || `${r.title} — ${r.description}`,
-      mediaUrl: r.media_url ?? undefined,
-      permalinkUrl: r.permalink_url || '#',
-      timestamp: r.timestamp,
-      sourceLabel: r.source_label || 'Manual',
+      description: r.content ?? '',
+      fullText: r.content ?? '',
+      mediaUrl: undefined,
+      permalinkUrl: '#',
+      timestamp: r.created_at ?? new Date().toISOString(),
+      sourceLabel: 'Manual',
     })) ?? []
   );
 }
