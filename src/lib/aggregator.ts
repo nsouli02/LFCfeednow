@@ -1,9 +1,13 @@
 import type { FeedItem } from './types';
 import { fetchLiverpoolRss } from './webNews';
+import { listManualPosts } from './adminStore';
 
 export async function getAggregatedFeed(limit = 24): Promise<FeedItem[]> {
   let items: FeedItem[] = [];
-  const results = await Promise.allSettled([fetchLiverpoolRss(limit)]);
+  const results = await Promise.allSettled([
+    fetchLiverpoolRss(limit),
+    listManualPosts(),
+  ]);
   for (const r of results) if (r.status === 'fulfilled') items = items.concat(r.value);
 
   return items
