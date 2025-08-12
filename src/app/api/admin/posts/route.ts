@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import type { FeedItem } from '@/lib/types';
 import { addManualPost, listManualPosts } from '@/lib/adminStore';
 
+export const runtime = 'nodejs';
+
 function isAuthed(request: Request): boolean {
   const cookie = request.headers.get('cookie') || '';
   const secret = process.env.ADMIN_SESSION_SECRET || '';

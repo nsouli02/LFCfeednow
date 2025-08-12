@@ -51,9 +51,15 @@ export default function AdminPage({ searchParams }: { searchParams?: Record<stri
 }
 
 async function ManualPostsList() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/admin/posts`, { cache: 'no-store' });
-  const data = await res.json();
-  const items: any[] = data.items || [];
+  let items: any[] = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/admin/posts`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Posts fetch failed: ${res.status}`);
+    const data = await res.json();
+    items = data.items || [];
+  } catch {
+    items = [];
+  }
   if (!items.length) return null;
   return (
     <div className="mt-6">

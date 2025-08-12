@@ -1,9 +1,11 @@
 import type { FeedItem } from './types';
-import { supabase } from './supabaseClient';
+import { getSupabase, supabaseConfigured } from './supabaseClient';
 
 const TABLE = 'manual_posts';
 
 export async function addManualPost(item: FeedItem): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase not configured');
   await supabase.from(TABLE).insert({
     id: item.id,
     title: item.title,
@@ -17,11 +19,15 @@ export async function addManualPost(item: FeedItem): Promise<void> {
 }
 
 export async function removeManualPost(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  if (!supabase) return false;
   const { error } = await supabase.from(TABLE).delete().eq('id', id);
   return !error;
 }
 
 export async function listManualPosts(): Promise<FeedItem[]> {
+  const supabase = getSupabase();
+  if (!supabase) return [];
   const { data } = await supabase
     .from(TABLE)
     .select('*')

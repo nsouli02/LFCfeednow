@@ -1,9 +1,11 @@
 import bcrypt from 'bcryptjs';
-import { supabase } from './supabaseClient';
+import { getSupabase } from './supabaseClient';
 
 type AdminRow = { id: number; password_hash: string | null };
 
 export async function isPasswordValidAgainstSupabase(code: string): Promise<boolean> {
+  const supabase = getSupabase();
+  if (!supabase) return false;
   // Fetch first admin row (single admin scenario)
   const { data, error } = await supabase
     .from('admins')
