@@ -1,0 +1,36 @@
+import type { FeedItem } from '@/lib/types';
+import { timeAgo } from '@/lib/time';
+import Link from 'next/link';
+import { clsx } from 'clsx';
+
+export function FeedCard({ item }: { item: FeedItem }) {
+  return (
+    <article className="glass flex h-full flex-col rounded-xl p-4 transition hover:shadow-glow">
+      <div className="mb-2 flex items-center justify-between text-xs text-white/60">
+        <span className={clsx('rounded-md px-2 py-1', 'bg-emerald-500/15 text-emerald-200')}>
+          {item.platform}
+        </span>
+        <span>{timeAgo(new Date(item.timestamp))}</span>
+      </div>
+
+      <h3 className="headline line-clamp-4 mb-2">{item.title}</h3>
+      <p className="muted line-clamp-4 whitespace-pre-line text-sm">{item.description}</p>
+
+      {item.mediaUrl && (
+        <div className="mt-3 overflow-hidden rounded-lg">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={item.mediaUrl} alt="post media" className="h-60 w-full object-cover" />
+        </div>
+      )}
+
+      <div className="mt-3 mt-auto flex items-center justify-between text-xs text-white/60">
+        <Link href={item.permalinkUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white/90">
+          View source
+        </Link>
+        <span className="rounded bg-white/10 px-2 py-0.5">{item.sourceLabel}</span>
+      </div>
+    </article>
+  );
+}
+
+
