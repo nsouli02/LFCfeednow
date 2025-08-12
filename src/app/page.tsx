@@ -5,7 +5,10 @@ import { FeedCard } from '@/components/FeedCard';
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function Page() {
-  const { data, isLoading } = useSWR('/api/feeds', fetcher);
+  const { data, isLoading } = useSWR('/api/feeds', fetcher, {
+    refreshInterval: 5000,
+    revalidateOnFocus: true,
+  });
   const items = data?.items ?? [];
 
   return (
