@@ -2,12 +2,13 @@
 import useSWR from 'swr';
 import { FeedCard } from '@/components/FeedCard';
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = (url: string) => fetch(url, { cache: 'no-store' }).then((r) => r.json());
 
 export default function Page() {
   const { data, isLoading } = useSWR('/api/feeds', fetcher, {
-    refreshInterval: 5000,
+    refreshInterval: 2000,
     revalidateOnFocus: true,
+    dedupingInterval: 0,
   });
   const items = data?.items ?? [];
 
