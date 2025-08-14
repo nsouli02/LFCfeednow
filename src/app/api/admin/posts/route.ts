@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { FeedItem } from '@/lib/types';
-import { addManualPost, listManualPosts, updateManualPost } from '@/lib/adminStore';
+import { addManualPost, listManualPosts, removeManualPost } from '@/lib/adminStore';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -33,7 +33,9 @@ export async function POST(request: Request) {
     sourceLabel: 'Manual',
   };
   if (id) {
-    await updateManualPost(id, { title, description, fullText });
+    // Replace previous post: delete old row, then insert the edited one
+    try { await removeManualPost(id); } catch {}
+    await addManualPost(item);
   } else {
     await addManualPost(item);
   }
