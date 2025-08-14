@@ -12,9 +12,11 @@ export async function addManualPost(item: FeedItem): Promise<void> {
   let insertPayload: Record<string, any>;
   if (IS_ADMINPOST) {
     // Adminpost columns: id (int8), created_at (timestamptz), title (text), content (text)
+    // We also support an optional "summary" column to store the short description
     insertPayload = {
       title: item.title,
       content: item.fullText || '',
+      summary: item.description || null,
       created_at: item.timestamp,
     };
   } else {
@@ -49,7 +51,7 @@ export async function listManualPosts(): Promise<FeedItem[]> {
   if (IS_ADMINPOST) {
     const { data } = await supabase
       .from(TABLE)
-      .select('id, created_at, title, content')
+      .select('id, created_at, title, content, summary')
       .order('created_at', { ascending: false });
     const excerpt = (text: string, max = 200) => {
       const t = (text || '').trim();
@@ -61,7 +63,7 @@ export async function listManualPosts(): Promise<FeedItem[]> {
         id: String(r.id),
         platform: 'manual',
         title: r.title,
-        description: excerpt(r.content ?? ''),
+        description: (r.summary ?? '') || excerpt(r.content ?? ''),
         fullText: r.content ?? '',
         mediaUrl: undefined,
         permalinkUrl: '#',
@@ -99,10 +101,11 @@ export async function updateManualPost(
   if (IS_ADMINPOST) {
     const numericId = Number(id);
     const matchValue = isNaN(numericId) ? id : numericId;
-    const combined = (params.fullText ?? params.content ?? params.description ?? '').trim();
+    const combined = (params.fullText ?? params.content ?? '').trim();
     const updatePayload: Record<string, any> = {
       title: params.title ?? undefined,
       content: combined ?? undefined,
+      summary: (params.description ?? null) as any,
       created_at: new Date().toISOString(),
     };
     const { data, error } = await supabase
