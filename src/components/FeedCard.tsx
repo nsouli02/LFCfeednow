@@ -15,6 +15,9 @@ export function FeedCard({ item }: { item: FeedItem }) {
 
       <h3 className="headline line-clamp-4 mb-2">{item.title}</h3>
       <p className="muted line-clamp-4 whitespace-pre-line text-sm">{item.description}</p>
+      {item.platform === 'manual' && item.fullText && item.fullText.trim() && item.fullText.trim() !== (item.description || '').trim() && (
+        <p className="muted mt-2 line-clamp-4 whitespace-pre-line text-sm">{item.fullText}</p>
+      )}
 
       {item.mediaUrl && (
         <div className="mt-3 overflow-hidden rounded-lg">
