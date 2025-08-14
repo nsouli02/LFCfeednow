@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { listManualPosts } from '@/lib/adminStore';
 
 export const dynamic = 'force-dynamic';
@@ -11,6 +12,9 @@ export default async function PostPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
+      <div className="mb-4">
+        <Link href="/" className="rounded-md bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20">← Back to home</Link>
+      </div>
       <h1 className="mb-4 text-3xl font-bold">{post.title}</h1>
       <article className="prose prose-invert max-w-none whitespace-pre-line">
         {post.fullText}
