@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   const id = (form.get('id') as string) || '';
   const title = (form.get('title') as string) || '';
   const description = (form.get('description') as string) || '';
-  const fullText = (form.get('fullText') as string) || `${title} — ${description}`;
+  const fullText = (form.get('fullText') as string) || description || '';
   const permalinkUrl = (form.get('permalinkUrl') as string) || '#';
 
   const item: FeedItem = {

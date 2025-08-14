@@ -16,8 +16,8 @@ export default async function EditPostPage({ params }: { params: { id: string } 
       <form action="/api/admin/posts" method="post" className="space-y-3">
         <input type="hidden" name="id" value={post.id} />
         <input name="title" defaultValue={post.title} className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" />
-        <textarea name="description" defaultValue={post.description} rows={3} className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" />
-        <textarea name="fullText" defaultValue={post.fullText} rows={8} className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" />
+        <textarea name="description" defaultValue={post.description} placeholder="Short description (optional)" rows={3} className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" />
+        <textarea name="fullText" defaultValue={post.fullText} placeholder="Full text (shown on post page and used in main card preview)" rows={8} className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" />
         <button className="rounded-md bg-emerald-600 px-4 py-2 font-medium">Save</button>
       </form>
     </main>

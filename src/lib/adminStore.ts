@@ -14,7 +14,7 @@ export async function addManualPost(item: FeedItem): Promise<void> {
     // Adminpost columns: id (int8), created_at (timestamptz), title (text), content (text)
     insertPayload = {
       title: item.title,
-      content: item.fullText || item.description || '',
+      content: item.fullText || '',
       created_at: item.timestamp,
     };
   } else {
