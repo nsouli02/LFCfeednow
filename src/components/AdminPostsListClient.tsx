@@ -7,7 +7,7 @@ type Item = { id: string; title: string };
 const fetcher = (url: string) => fetch(url, { cache: 'no-store' }).then((r) => r.json());
 
 export function AdminPostsListClient() {
-  const { data, isLoading, mutate } = useSWR('/api/admin/posts', fetcher, { refreshInterval: 10000 });
+  const { data, isLoading, mutate } = useSWR('/api/admin/posts', fetcher, { refreshInterval: 5000, revalidateOnFocus: true });
   const items: Item[] = data?.items ?? [];
 
   const onDelete = async (id: string) => {
