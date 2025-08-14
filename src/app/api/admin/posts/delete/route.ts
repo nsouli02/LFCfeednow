@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { removeManualPost } from '@/lib/adminStore';
 
 export const runtime = 'nodejs';
@@ -22,6 +23,11 @@ export async function POST(request: Request) {
     id = searchParams.get('id') || '';
   }
   if (id) await removeManualPost(id);
+  try {
+    revalidatePath('/');
+    revalidatePath('/api/feeds');
+    revalidatePath('/admin');
+  } catch {}
   return NextResponse.redirect(new URL('/admin', request.url), { status: 303 });
 }
 
@@ -30,6 +36,11 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id') || '';
   if (id) await removeManualPost(id);
+  try {
+    revalidatePath('/');
+    revalidatePath('/api/feeds');
+    revalidatePath('/admin');
+  } catch {}
   return NextResponse.redirect(new URL('/admin', request.url), { status: 303 });
 }
 
