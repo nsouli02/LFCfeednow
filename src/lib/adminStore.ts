@@ -99,7 +99,7 @@ export async function updateManualPost(
   if (IS_ADMINPOST) {
     const numericId = Number(id);
     const matchValue = isNaN(numericId) ? id : numericId;
-    const combined = [params.description ?? '', params.fullText ?? ''].filter(Boolean).join('\n\n') || params.content;
+    const combined = (params.fullText ?? params.content ?? params.description ?? '').trim();
     const updatePayload: Record<string, any> = {
       title: params.title ?? undefined,
       content: combined ?? undefined,
