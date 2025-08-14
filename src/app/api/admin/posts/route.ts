@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { FeedItem } from '@/lib/types';
-import { addManualPost, listManualPosts } from '@/lib/adminStore';
+import { addManualPost, listManualPosts, updateManualPost } from '@/lib/adminStore';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,6 +15,7 @@ export async function POST(request: Request) {
   if (!isAuthed(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const form = await request.formData();
+  const id = (form.get('id') as string) || '';
   const title = (form.get('title') as string) || '';
   const description = (form.get('description') as string) || '';
   const fullText = (form.get('fullText') as string) || `${title} — ${description}`;
@@ -31,7 +32,11 @@ export async function POST(request: Request) {
     timestamp: new Date().toISOString(),
     sourceLabel: 'Manual',
   };
-  await addManualPost(item);
+  if (id) {
+    await updateManualPost(id, { title, description, fullText });
+  } else {
+    await addManualPost(item);
+  }
   return NextResponse.redirect(new URL('/admin', request.url));
 }
 

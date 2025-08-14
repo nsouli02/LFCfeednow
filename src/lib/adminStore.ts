@@ -86,4 +86,32 @@ export async function listManualPosts(): Promise<FeedItem[]> {
   }
 }
 
+export async function updateManualPost(
+  id: string,
+  params: { title?: string; content?: string; description?: string; fullText?: string }
+): Promise<boolean> {
+  const supabase = getSupabase();
+  if (!supabase) return false;
+  if (IS_ADMINPOST) {
+    const numericId = Number(id);
+    const matchValue = isNaN(numericId) ? id : numericId;
+    const updatePayload: Record<string, any> = {
+      title: params.title ?? undefined,
+      content: params.content ?? params.fullText ?? params.description ?? undefined,
+      created_at: new Date().toISOString(),
+    };
+    const { error } = await supabase.from(TABLE).update(updatePayload).eq('id', matchValue);
+    return !error;
+  } else {
+    const updatePayload: Record<string, any> = {
+      title: params.title ?? undefined,
+      description: params.description ?? undefined,
+      full_text: params.fullText ?? params.content ?? undefined,
+      timestamp: new Date().toISOString(),
+    };
+    const { error } = await supabase.from(TABLE).update(updatePayload).eq('id', id);
+    return !error;
+  }
+}
+
 

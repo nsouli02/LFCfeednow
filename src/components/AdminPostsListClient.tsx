@@ -17,6 +17,19 @@ export function AdminPostsListClient() {
     }
   };
 
+  const onEdit = async (item: Item) => {
+    const newTitle = prompt('Edit title', item.title) || item.title;
+    const newDescription = prompt('Edit description (optional)', '') || '';
+    const newFullText = prompt('Edit full text (optional)', '') || '';
+    const form = new FormData();
+    form.set('id', item.id);
+    form.set('title', newTitle);
+    form.set('description', newDescription);
+    form.set('fullText', newFullText);
+    await fetch('/api/admin/posts', { method: 'POST', body: form });
+    mutate();
+  };
+
   if (isLoading) return null;
   if (!items.length) return null;
 
@@ -27,7 +40,10 @@ export function AdminPostsListClient() {
         {items.map((it) => (
           <li key={it.id} className="flex items-center justify-between rounded-md bg-white/5 px-3 py-2">
             <div className="truncate pr-3 text-sm">{it.title}</div>
-            <button onClick={() => onDelete(it.id)} className="rounded-md bg-red-600/80 px-2 py-1 text-xs">Delete</button>
+            <div className="flex gap-2">
+              <button onClick={() => onEdit(it)} className="rounded-md bg-blue-600/80 px-2 py-1 text-xs">Edit</button>
+              <button onClick={() => onDelete(it.id)} className="rounded-md bg-red-600/80 px-2 py-1 text-xs">Delete</button>
+            </div>
           </li>
         ))}
       </ul>
