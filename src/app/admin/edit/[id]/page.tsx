@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function EditPostPage({ params }: { params: { id: string } }) {
   const { id } = params;
+  // Force fresh fetch so the editor shows latest content after a save
   const items = await listManualPosts();
   const post = items.find((p) => String(p.id) === String(id));
   if (!post) return notFound();

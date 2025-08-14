@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import type { FeedItem } from '@/lib/types';
 import { addManualPost, listManualPosts, updateManualPost, removeManualPost } from '@/lib/adminStore';
 
@@ -41,6 +42,12 @@ export async function POST(request: Request) {
   } else {
     await addManualPost(item);
   }
+  // Force pages to refresh cached data immediately after publish/edit
+  try {
+    revalidatePath('/');
+    revalidatePath('/api/feeds');
+    revalidatePath('/admin');
+  } catch {}
   return NextResponse.redirect(new URL('/admin', request.url));
 }
 
