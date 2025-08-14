@@ -12,10 +12,9 @@ export async function addManualPost(item: FeedItem): Promise<void> {
   let insertPayload: Record<string, any>;
   if (IS_ADMINPOST) {
     // Adminpost columns: id (int8), created_at (timestamptz), title (text), content (text)
-    const content = [item.description, item.fullText].filter(Boolean).join('\n\n');
     insertPayload = {
       title: item.title,
-      content,
+      content: item.fullText || item.description || '',
       created_at: item.timestamp,
     };
   } else {
@@ -52,12 +51,17 @@ export async function listManualPosts(): Promise<FeedItem[]> {
       .from(TABLE)
       .select('id, created_at, title, content')
       .order('created_at', { ascending: false });
+    const excerpt = (text: string, max = 200) => {
+      const t = (text || '').trim();
+      if (t.length <= max) return t;
+      return t.slice(0, max).replace(/\s+\S*$/, '') + '…';
+    };
     return (
       data?.map((r: any) => ({
         id: String(r.id),
         platform: 'manual',
         title: r.title,
-        description: r.content ?? '',
+        description: excerpt(r.content ?? ''),
         fullText: r.content ?? '',
         mediaUrl: undefined,
         permalinkUrl: '#',
@@ -101,8 +105,12 @@ export async function updateManualPost(
       content: combined ?? undefined,
       created_at: new Date().toISOString(),
     };
-    const { error } = await supabase.from(TABLE).update(updatePayload).eq('id', matchValue);
-    return !error;
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update(updatePayload)
+      .eq('id', matchValue)
+      .select('id');
+    return !error && Array.isArray(data) && data.length > 0;
   } else {
     const updatePayload: Record<string, any> = {
       title: params.title ?? undefined,
@@ -110,8 +118,12 @@ export async function updateManualPost(
       full_text: params.fullText ?? params.content ?? undefined,
       timestamp: new Date().toISOString(),
     };
-    const { error } = await supabase.from(TABLE).update(updatePayload).eq('id', id);
-    return !error;
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update(updatePayload)
+      .eq('id', id)
+      .select('id');
+    return !error && Array.isArray(data) && data.length > 0;
   }
 }
 
