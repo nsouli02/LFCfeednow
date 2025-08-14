@@ -24,8 +24,13 @@ export function FeedCard({ item }: { item: FeedItem }) {
       )}
 
       <div className="mt-3 mt-auto flex items-center justify-between text-xs text-white/60">
-        <Link href={item.permalinkUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white/90">
-          View source
+        <Link
+          href={item.platform === 'manual' ? `/post/${encodeURIComponent(item.id)}` : item.permalinkUrl}
+          target={item.platform === 'manual' ? undefined : '_blank'}
+          rel={item.platform === 'manual' ? undefined : 'noopener noreferrer'}
+          className="hover:text-white/90"
+        >
+          {item.platform === 'manual' ? 'Open post' : 'View source'}
         </Link>
         <span className="rounded bg-white/10 px-2 py-0.5">{item.sourceLabel}</span>
       </div>

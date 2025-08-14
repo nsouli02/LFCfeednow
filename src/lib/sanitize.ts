@@ -25,7 +25,8 @@ export function decodeHtmlEntities(input: string): string {
 export function lettersOnly(input: string): string {
   if (!input) return '';
   const normalized = input.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  return normalized.replace(/[^A-Za-z ]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+  // Keep letters, numbers, spaces, full stops and commas
+  return normalized.replace(/[^A-Za-z0-9., ]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
 }
 
 
