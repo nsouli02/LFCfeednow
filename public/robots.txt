@@ -6,4 +6,4 @@ Disallow: /admin
 Disallow: /api/
 
 # Sitemap
-Sitemap: https://lfcfeednow.vercel.app/sitemap.xml 
+Sitemap: https://lfcfeednow.vercel.app/sitemap.xml
