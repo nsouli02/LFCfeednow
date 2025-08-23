@@ -26,8 +26,8 @@ export async function POST(request: Request) {
   const deleteMedia = form.get('deleteMedia') === 'true';
 
   // Handle file upload or deletion
-  let mediaUrl: string | undefined = undefined;
-  let mediaType: 'image' | 'video' | undefined = undefined;
+  let mediaUrl: string | null | undefined = undefined;
+  let mediaType: 'image' | 'video' | null | undefined = undefined;
   
   if (deleteMedia) {
     // Delete current media
@@ -53,8 +53,8 @@ export async function POST(request: Request) {
     title,
     description,
     fullText,
-    mediaUrl,
-    mediaType,
+    mediaUrl: mediaUrl ?? undefined,
+    mediaType: mediaType ?? undefined,
     permalinkUrl,
     timestamp: new Date().toISOString(),
     sourceLabel: 'Manual',
