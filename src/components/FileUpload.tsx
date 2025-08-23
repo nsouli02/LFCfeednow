@@ -81,20 +81,20 @@ export function FileUpload({ onFileSelect, onDeleteCurrent, accept = "image/*,vi
       </div>
       
       {preview && !currentDeleted && (
-        <div className="mt-3">
+        <div className="mt-3 flex justify-center rounded-lg bg-white/5 p-2">
           {preview.includes('video') || file?.type.startsWith('video/') ? (
             <video 
               src={preview} 
               controls 
-              className="max-w-xs rounded-lg"
-              style={{ maxHeight: '200px' }}
+              className="rounded-lg object-contain"
+              style={{ maxHeight: '300px', maxWidth: '100%' }}
             />
           ) : (
             <img 
               src={preview} 
               alt="Preview" 
-              className="max-w-xs rounded-lg"
-              style={{ maxHeight: '200px', objectFit: 'cover' }}
+              className="rounded-lg object-contain"
+              style={{ maxHeight: '300px', maxWidth: '100%' }}
             />
           )}
         </div>

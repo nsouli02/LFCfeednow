@@ -20,17 +20,22 @@ export function FeedCard({ item }: { item: FeedItem }) {
       )}
 
       {item.mediaUrl && (
-        <div className="mt-3 overflow-hidden rounded-lg">
+        <div className="mt-3 overflow-hidden rounded-lg bg-white/5">
           {item.mediaType === 'video' ? (
             <video 
               src={item.mediaUrl} 
               controls 
-              className="h-60 w-full object-cover"
+              className="w-full max-h-80 object-contain"
               preload="metadata"
             />
           ) : (
             /* eslint-disable-next-line @next/next/no-img-element */
-            <img src={item.mediaUrl} alt="post media" className="h-60 w-full object-cover" />
+            <img 
+              src={item.mediaUrl} 
+              alt="post media" 
+              className="w-full max-h-80 object-contain"
+              style={{ minHeight: '200px' }}
+            />
           )}
         </div>
       )}

@@ -18,21 +18,21 @@ export default async function PostPage({ params }: { params: { id: string } }) {
       <h1 className="mb-4 text-3xl font-bold">{post.title}</h1>
       
       {post.mediaUrl && (
-        <div className="mb-6 overflow-hidden rounded-lg">
+        <div className="mb-6 flex justify-center overflow-hidden rounded-lg bg-white/5">
           {post.mediaType === 'video' ? (
             <video 
               src={post.mediaUrl} 
               controls 
-              className="w-full"
-              style={{ maxHeight: '400px' }}
+              className="w-full object-contain"
+              style={{ maxHeight: '600px', maxWidth: '100%' }}
             />
           ) : (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img 
               src={post.mediaUrl} 
               alt={post.title} 
-              className="w-full object-cover"
-              style={{ maxHeight: '400px' }}
+              className="w-full object-contain"
+              style={{ maxHeight: '600px', maxWidth: '100%' }}
             />
           )}
         </div>
