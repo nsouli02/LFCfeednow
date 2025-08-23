@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import type { FeedItem } from '@/lib/types';
 import { addManualPost, listManualPosts, updateManualPost, removeManualPost } from '@/lib/adminStore';
+import { uploadToSupabase } from '@/lib/supabaseUpload';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,6 +22,24 @@ export async function POST(request: Request) {
   const description = (form.get('description') as string) || '';
   const fullText = (form.get('fullText') as string) || description || '';
   const permalinkUrl = (form.get('permalinkUrl') as string) || '#';
+  const mediaFile = form.get('media') as File | null;
+
+  // Handle file upload if present
+  let mediaUrl: string | undefined = undefined;
+  let mediaType: 'image' | 'video' | undefined = undefined;
+  
+  if (mediaFile && mediaFile.size > 0) {
+    try {
+      const uploadResult = await uploadToSupabase(mediaFile);
+      if (uploadResult) {
+        mediaUrl = uploadResult.url;
+        mediaType = mediaFile.type.startsWith('video/') ? 'video' : 'image';
+      }
+    } catch (error) {
+      console.error('File upload failed:', error);
+      return NextResponse.json({ error: 'File upload failed' }, { status: 500 });
+    }
+  }
 
   const item: FeedItem = {
     id: `manual_${Date.now()}`,
@@ -28,13 +47,15 @@ export async function POST(request: Request) {
     title,
     description,
     fullText,
-    mediaUrl: undefined,
+    mediaUrl,
+    mediaType,
     permalinkUrl,
     timestamp: new Date().toISOString(),
     sourceLabel: 'Manual',
   };
+  
   if (id) {
-    const ok = await updateManualPost(id, { title, description, fullText });
+    const ok = await updateManualPost(id, { title, description, fullText, mediaUrl, mediaType });
     if (!ok) {
       try { await removeManualPost(id); } catch {}
       await addManualPost(item);
@@ -42,6 +63,7 @@ export async function POST(request: Request) {
   } else {
     await addManualPost(item);
   }
+  
   // Force pages to refresh cached data immediately after publish/edit
   try {
     revalidatePath('/');

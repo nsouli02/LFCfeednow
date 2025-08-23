@@ -16,6 +16,28 @@ export default async function PostPage({ params }: { params: { id: string } }) {
         <Link href="/" className="rounded-md bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20">← Back to home</Link>
       </div>
       <h1 className="mb-4 text-3xl font-bold">{post.title}</h1>
+      
+      {post.mediaUrl && (
+        <div className="mb-6 overflow-hidden rounded-lg">
+          {post.mediaType === 'video' ? (
+            <video 
+              src={post.mediaUrl} 
+              controls 
+              className="w-full"
+              style={{ maxHeight: '400px' }}
+            />
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img 
+              src={post.mediaUrl} 
+              alt={post.title} 
+              className="w-full object-cover"
+              style={{ maxHeight: '400px' }}
+            />
+          )}
+        </div>
+      )}
+      
       <article className="prose prose-invert max-w-none whitespace-pre-line">
         {post.fullText}
       </article>

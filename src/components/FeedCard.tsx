@@ -21,8 +21,17 @@ export function FeedCard({ item }: { item: FeedItem }) {
 
       {item.mediaUrl && (
         <div className="mt-3 overflow-hidden rounded-lg">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={item.mediaUrl} alt="post media" className="h-60 w-full object-cover" />
+          {item.mediaType === 'video' ? (
+            <video 
+              src={item.mediaUrl} 
+              controls 
+              className="h-60 w-full object-cover"
+              preload="metadata"
+            />
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={item.mediaUrl} alt="post media" className="h-60 w-full object-cover" />
+          )}
         </div>
       )}
 

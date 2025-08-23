@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { AdminPostsListClient } from '@/components/AdminPostsListClient';
+import { AdminPostForm } from '@/components/AdminPostForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,13 +32,7 @@ export default function AdminPage({ searchParams }: { searchParams?: Record<stri
         </div>
       ) : (
         <div className="glass rounded-xl p-6">
-          <form action="/api/admin/posts" method="post" className="space-y-3">
-            <input name="title" placeholder="Title" className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" />
-            <textarea name="description" placeholder="Short description" className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" rows={4} />
-            <textarea name="fullText" placeholder="Full text (optional)" className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" rows={6} />
-            <input name="permalinkUrl" placeholder="Source link (optional)" className="w-full rounded-md bg-white/10 px-3 py-2 outline-none" />
-            <button className="rounded-md bg-emerald-600 px-4 py-2 font-medium">Publish</button>
-          </form>
+          <AdminPostForm />
           <ManualPostsList />
           <AdminPostsListClient />
           <div className="mt-4 flex items-center justify-between text-sm text-white/70">

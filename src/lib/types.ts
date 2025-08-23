@@ -7,6 +7,7 @@ export type FeedItem = {
   description: string;
   fullText: string;
   mediaUrl?: string | null;
+  mediaType?: 'image' | 'video' | null;
   permalinkUrl: string;
   timestamp: string; // ISO
   sourceLabel: string;

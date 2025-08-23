@@ -11,12 +11,13 @@ export async function addManualPost(item: FeedItem): Promise<void> {
   if (!supabase) throw new Error('Supabase not configured');
   let insertPayload: Record<string, any>;
   if (IS_ADMINPOST) {
-    // Adminpost columns: id (int8), created_at (timestamptz), title (text), content (text)
-    // We also support an optional "summary" column to store the short description
+    // Adminpost columns: id (int8), created_at (timestamptz), title (text), content (text), summary (text), media_url (text), media_type (text)
     insertPayload = {
       title: item.title,
       content: item.fullText || '',
       summary: item.description || null,
+      media_url: item.mediaUrl || null,
+      media_type: item.mediaType || null,
       created_at: item.timestamp,
     };
   } else {
@@ -51,7 +52,7 @@ export async function listManualPosts(): Promise<FeedItem[]> {
   if (IS_ADMINPOST) {
     const { data } = await supabase
       .from(TABLE)
-      .select('id, created_at, title, content, summary')
+      .select('id, created_at, title, content, summary, media_url, media_type')
       .order('created_at', { ascending: false });
     const excerpt = (text: string, max = 200) => {
       const t = (text || '').trim();
@@ -65,7 +66,8 @@ export async function listManualPosts(): Promise<FeedItem[]> {
         title: r.title,
         description: (r.summary ?? '') || excerpt(r.content ?? ''),
         fullText: r.content ?? '',
-        mediaUrl: undefined,
+        mediaUrl: r.media_url ?? undefined,
+        mediaType: r.media_type ?? undefined,
         permalinkUrl: '#',
         timestamp: r.created_at ?? new Date().toISOString(),
         sourceLabel: 'Manual',
@@ -94,7 +96,7 @@ export async function listManualPosts(): Promise<FeedItem[]> {
 
 export async function updateManualPost(
   id: string,
-  params: { title?: string; content?: string; description?: string; fullText?: string }
+  params: { title?: string; content?: string; description?: string; fullText?: string; mediaUrl?: string; mediaType?: 'image' | 'video' }
 ): Promise<boolean> {
   const supabase = getSupabase();
   if (!supabase) return false;
@@ -106,6 +108,8 @@ export async function updateManualPost(
       title: params.title ?? undefined,
       content: combined ?? undefined,
       summary: (params.description ?? null) as any,
+      media_url: params.mediaUrl ?? undefined,
+      media_type: params.mediaType ?? undefined,
       created_at: new Date().toISOString(),
     };
     const { data, error } = await supabase
