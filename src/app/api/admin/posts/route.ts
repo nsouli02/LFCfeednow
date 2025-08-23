@@ -23,12 +23,18 @@ export async function POST(request: Request) {
   const fullText = (form.get('fullText') as string) || description || '';
   const permalinkUrl = (form.get('permalinkUrl') as string) || '#';
   const mediaFile = form.get('media') as File | null;
+  const deleteMedia = form.get('deleteMedia') === 'true';
 
-  // Handle file upload if present
+  // Handle file upload or deletion
   let mediaUrl: string | undefined = undefined;
   let mediaType: 'image' | 'video' | undefined = undefined;
   
-  if (mediaFile && mediaFile.size > 0) {
+  if (deleteMedia) {
+    // Delete current media
+    mediaUrl = null;
+    mediaType = null;
+  } else if (mediaFile && mediaFile.size > 0) {
+    // Upload new media
     try {
       const uploadResult = await uploadToSupabase(mediaFile);
       if (uploadResult) {
@@ -55,7 +61,17 @@ export async function POST(request: Request) {
   };
   
   if (id) {
-    const ok = await updateManualPost(id, { title, description, fullText, mediaUrl, mediaType });
+    // For edits, pass media changes including deletion
+    const updateParams: any = { title, description, fullText };
+    if (deleteMedia) {
+      updateParams.mediaUrl = null;
+      updateParams.mediaType = null;
+    } else if (mediaFile && mediaFile.size > 0) {
+      updateParams.mediaUrl = mediaUrl;
+      updateParams.mediaType = mediaType;
+    }
+    
+    const ok = await updateManualPost(id, updateParams);
     if (!ok) {
       try { await removeManualPost(id); } catch {}
       await addManualPost(item);

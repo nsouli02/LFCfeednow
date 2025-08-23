@@ -10,6 +10,7 @@ interface AdminEditFormProps {
 export function AdminEditForm({ post }: AdminEditFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleteCurrentMedia, setDeleteCurrentMedia] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,6 +21,11 @@ export function AdminEditForm({ post }: AdminEditFormProps) {
     // Add the selected file if any
     if (selectedFile) {
       formData.set('media', selectedFile);
+    }
+    
+    // Add delete flag if current media should be deleted
+    if (deleteCurrentMedia) {
+      formData.set('deleteMedia', 'true');
     }
 
     try {
@@ -71,7 +77,9 @@ export function AdminEditForm({ post }: AdminEditFormProps) {
       
       <FileUpload 
         onFileSelect={setSelectedFile} 
+        onDeleteCurrent={() => setDeleteCurrentMedia(true)}
         currentFileUrl={post.mediaUrl || undefined}
+        allowDelete={true}
       />
       
       <button 

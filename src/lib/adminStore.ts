@@ -96,7 +96,7 @@ export async function listManualPosts(): Promise<FeedItem[]> {
 
 export async function updateManualPost(
   id: string,
-  params: { title?: string; content?: string; description?: string; fullText?: string; mediaUrl?: string; mediaType?: 'image' | 'video' }
+  params: { title?: string; content?: string; description?: string; fullText?: string; mediaUrl?: string | null; mediaType?: 'image' | 'video' | null }
 ): Promise<boolean> {
   const supabase = getSupabase();
   if (!supabase) return false;
@@ -108,10 +108,16 @@ export async function updateManualPost(
       title: params.title ?? undefined,
       content: combined ?? undefined,
       summary: (params.description ?? null) as any,
-      media_url: params.mediaUrl ?? undefined,
-      media_type: params.mediaType ?? undefined,
       created_at: new Date().toISOString(),
     };
+    
+    // Handle media updates - include null values for deletion
+    if ('mediaUrl' in params) {
+      updatePayload.media_url = params.mediaUrl;
+    }
+    if ('mediaType' in params) {
+      updatePayload.media_type = params.mediaType;
+    }
     const { data, error } = await supabase
       .from(TABLE)
       .update(updatePayload)
@@ -125,6 +131,14 @@ export async function updateManualPost(
       full_text: params.fullText ?? params.content ?? undefined,
       timestamp: new Date().toISOString(),
     };
+    
+    // Handle media updates - include null values for deletion
+    if ('mediaUrl' in params) {
+      updatePayload.media_url = params.mediaUrl;
+    }
+    if ('mediaType' in params) {
+      updatePayload.media_type = params.mediaType;
+    }
     const { data, error } = await supabase
       .from(TABLE)
       .update(updatePayload)

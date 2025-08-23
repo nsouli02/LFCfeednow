@@ -3,13 +3,16 @@ import { useState } from 'react';
 
 interface FileUploadProps {
   onFileSelect: (file: File | null) => void;
+  onDeleteCurrent?: () => void;
   accept?: string;
   currentFileUrl?: string;
+  allowDelete?: boolean;
 }
 
-export function FileUpload({ onFileSelect, accept = "image/*,video/*", currentFileUrl }: FileUploadProps) {
+export function FileUpload({ onFileSelect, onDeleteCurrent, accept = "image/*,video/*", currentFileUrl, allowDelete = false }: FileUploadProps) {
   const [preview, setPreview] = useState<string | null>(currentFileUrl || null);
   const [file, setFile] = useState<File | null>(null);
+  const [currentDeleted, setCurrentDeleted] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
@@ -28,8 +31,18 @@ export function FileUpload({ onFileSelect, accept = "image/*,video/*", currentFi
 
   const clearFile = () => {
     setFile(null);
-    setPreview(currentFileUrl || null);
+    setPreview(currentDeleted ? null : currentFileUrl || null);
     onFileSelect(null);
+  };
+
+  const deleteCurrentFile = () => {
+    setCurrentDeleted(true);
+    setPreview(null);
+    setFile(null);
+    onFileSelect(null);
+    if (onDeleteCurrent) {
+      onDeleteCurrent();
+    }
   };
 
   return (
@@ -45,17 +58,29 @@ export function FileUpload({ onFileSelect, accept = "image/*,video/*", currentFi
         className="w-full rounded-md bg-white/10 px-3 py-2 text-sm outline-none file:mr-3 file:rounded file:border-0 file:bg-white/20 file:px-3 file:py-1 file:text-white"
       />
       
-      {file && (
-        <button
-          type="button"
-          onClick={clearFile}
-          className="text-sm text-red-400 hover:text-red-300"
-        >
-          Clear file
-        </button>
-      )}
+      <div className="flex gap-2">
+        {file && (
+          <button
+            type="button"
+            onClick={clearFile}
+            className="text-sm text-red-400 hover:text-red-300"
+          >
+            Clear new file
+          </button>
+        )}
+        
+        {allowDelete && currentFileUrl && !currentDeleted && !file && (
+          <button
+            type="button"
+            onClick={deleteCurrentFile}
+            className="text-sm text-red-400 hover:text-red-300"
+          >
+            Delete current media
+          </button>
+        )}
+      </div>
       
-      {preview && (
+      {preview && !currentDeleted && (
         <div className="mt-3">
           {preview.includes('video') || file?.type.startsWith('video/') ? (
             <video 
@@ -72,6 +97,12 @@ export function FileUpload({ onFileSelect, accept = "image/*,video/*", currentFi
               style={{ maxHeight: '200px', objectFit: 'cover' }}
             />
           )}
+        </div>
+      )}
+
+      {currentDeleted && (
+        <div className="mt-3 text-sm text-yellow-400">
+          Current media will be deleted when you save
         </div>
       )}
     </div>
