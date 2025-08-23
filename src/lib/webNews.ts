@@ -9,7 +9,7 @@ export async function fetchLiverpoolRss(limit = 50): Promise<FeedItem[]> {
   const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '' });
   const tasks = RSS_FEEDS.map(async (src) => {
     try {
-      const res = await fetch(src.url, { next: { revalidate: 300 } });
+      const res = await fetch(src.url, { next: { revalidate: 60 } });
       if (!res.ok) return [] as FeedItem[];
       const xml = await res.text();
       const json = parser.parse(xml);

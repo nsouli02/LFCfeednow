@@ -6,7 +6,7 @@ const fetcher = (url: string) => fetch(url, { cache: 'no-store' }).then((r) => r
 
 export default function Page() {
   const { data, isLoading } = useSWR('/api/feeds', fetcher, {
-    refreshInterval: 2000,
+    refreshInterval: 60000, // Update every 1 minute
     revalidateOnFocus: true,
     dedupingInterval: 0,
   });
