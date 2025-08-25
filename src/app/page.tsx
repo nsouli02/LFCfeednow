@@ -20,8 +20,8 @@ export default function Page() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images.jfif" alt="LFC" width={40} height={40} className="rounded-lg shadow-glow object-cover" />
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">LFC news only</h1>
-              <p className="muted text-sm">Liverpool FC news</p>
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight">Latest Liverpool FC News in Real Time</h1>
+              <p className="muted text-sm">Live updates & transfer news</p>
             </div>
           </div>
           <div className="hidden md:flex items-center gap-2 text-sm text-white/70">
