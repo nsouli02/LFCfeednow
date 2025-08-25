@@ -16,14 +16,14 @@ export const metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://your-domain.com'), // Replace with your actual domain
+  metadataBase: new URL('https://lfcfeednow.vercel.app'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'LFC Feed Now - Latest Liverpool FC News in Real Time',
     description: 'Get the latest Liverpool FC news, transfer updates, match reports, and rumors in real-time. Your ultimate source for LFC news aggregated from trusted sources.',
-    url: 'https://your-domain.com', // Replace with your actual domain
+    url: 'https://lfcfeednow.vercel.app',
     siteName: 'LFC Feed Now',
     images: [
       {
